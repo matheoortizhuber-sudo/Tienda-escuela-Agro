@@ -61,7 +61,7 @@ small{color:var(--mute)}
 <header><div class="wrap"><h1 id="sn"></h1><p>Productos hechos por nuestros estudiantes en la huerta, la granja y los talleres. Elegí lo que quieras y envianos tu pedido.</p></div></header>
 <main class="wrap">
 <div class="authbar" id="authbar"></div>
-<div class="admin" id="admin" hidden=""><b>Modo administrador</b><button class="btn" id="add">+ Nuevo producto</button><button class="btn alt" id="cfg">Ajustes de la escuela</button><button class="btn" id="dsc">Descontar pedido</button><small style="flex-basis:100%">Los pedidos te llegan por WhatsApp. Cuando confirmes uno, usa «Descontar pedido» para bajar el stock de todos sus productos de una vez.</small></div>
+<div class="admin" id="admin" hidden=""><b>Modo administrador</b><button class="btn" id="add">+ Nuevo producto</button><button class="btn alt" id="cfg">Ajustes de la escuela</button><button class="btn" id="dsc">Descontar pedido</button><button class="btn alt" id="export">Guardar cambios en archivo</button><small style="flex-basis:100%">Los pedidos te llegan por WhatsApp. Cuando confirmes uno, usa «Descontar pedido» para bajar el stock de todos sus productos de una vez. Guarda el HTML actualizado y elige el archivo de la tienda.</small></div>
 <div class="bar" id="cats" role="group" aria-label="Categorías"></div>
 <div class="grid" id="grid"></div>
 </main>
@@ -84,10 +84,26 @@ try{localEmail=localStorage.getItem(AUTH_SESSION_KEY)||""}catch(e){console.error
 try{cart=JSON.parse(localStorage.getItem("cart")||"{}")}catch(e){}
 const saveCart=()=>{try{localStorage.setItem("cart",JSON.stringify(cart))}catch(e){}};
 function toast(t){const b=$("toast");b.textContent=t;b.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>b.hidden=true,3500)}
-async function save(){const j=JSON.stringify(DATA).replace(/</g,"\\u003c");
+function pageSnapshot(){const j=JSON.stringify(DATA).replace(/</g,"\\u003c");
+ return SRC.replace(/\/\*D\*\/[\s\S]*?\/\*E\*\//,()=>"/*D*/"+j+"/*E*/")}
+async function save(){
  if(!art){try{localStorage.setItem(DATA_KEY,JSON.stringify(DATA));toast("Guardado solo en este navegador; los cambios no se comparten con otros dispositivos.");render();return true}catch(e){toast("No se pudo guardar en este navegador.");return false}}
- const html=SRC.replace(/\/\*D\*\/[\s\S]*?\/\*E\*\//,()=>"/*D*/"+j+"/*E*/");
- try{await art.publish(html)}catch(e){toast(e&&e.code=="conflict"?"Otra persona guardó cambios y la página se actualizó.":"No se pudo guardar. Intenta de nuevo.");return false}return true}
+ try{await art.publish(pageSnapshot())}catch(e){toast(e&&e.code=="conflict"?"Otra persona guardó cambios y la página se actualizó.":"No se pudo guardar. Intenta de nuevo.");return false}return true}
+async function downloadSnapshot(){
+ const content=pageSnapshot();
+ if(typeof window.showSaveFilePicker==="function"){
+  try{
+   const handle=await window.showSaveFilePicker({suggestedName:"tienda-escuela-agro.html",types:[{description:"Página HTML",accept:{"text/html":[".html"]}}]});
+   const writable=await handle.createWritable();await writable.write(content);await writable.close();
+   toast("Cambios guardados en el archivo HTML que elegiste.");return
+  }catch(error){if(error&&error.name==="AbortError")return;console.error("No se pudo guardar con el selector de archivos; se descargará una copia.",error)}
+ }
+ try{
+  const url=URL.createObjectURL(new Blob([content],{type:"text/html;charset=utf-8"}));
+  const link=el("a");link.href=url;link.download="tienda-escuela-agro-actualizada.html";link.hidden=true;document.body.append(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);toast("Descargada la copia actualizada. Reemplaza el HTML anterior por este archivo.")
+ }catch(error){console.error("No se pudo descargar la tienda actualizada.",error);toast("No se pudo guardar la copia. Revisa los permisos del navegador.")}
+}
 function close(){$("ov").hidden=true}
 function open(){$("ov").hidden=false}
 $("ov").onclick=e=>{if(e.target===$("ov"))close()};
@@ -209,6 +225,7 @@ $("dsc").onclick=()=>{const pn=$("pn");pn.textContent="";pn.append(el("h2","","D
  const row=el("div","row");row.style.marginTop="14px";const ok=el("button","btn","Descontar del stock"),no=el("button","btn alt","Cancelar");no.onclick=close;
  ok.onclick=async()=>{let any=0;ins.forEach(([p,i])=>{const q=Math.min(p.s,Math.max(0,Math.round(+i.value||0)));if(q){p.s-=q;any=1}});if(!any){toast("No cargaste cantidades.");return}ok.disabled=true;if(!(await save()))ok.disabled=false};
  row.append(ok,no);pn.append(row);open()};
+$("export").onclick=downloadSnapshot;
 $("add").onclick=()=>form();
 $("cfg").onclick=()=>{const pn=$("pn");pn.textContent="";pn.append(el("h2","","Ajustes de la escuela"));
  const n=field(pn,"Nombre de la escuela",el("input"));n.value=DATA.school.name;
