@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tienda de la Escuela Agro</title>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;800&amp;family=Nunito+Sans:wght@400;600;800&amp;display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6ee;--panel:#fff;--ink:#1d2b1f;--mute:#5d6b5f;--line:#d6dfcb;--g:#2e6b3f;--gt:#fff;--y:#e0a526;--bad:#b3261e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#141c15;--panel:#1d281f;--ink:#eaf1e4;--mute:#a3b2a4;--line:#32433a;--g:#6fbf84;--gt:#0e1a11;--y:#f0bd48;--bad:#ff8a80}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#141c15;--panel:#1d281f;--ink:#eaf1e4;--mute:#a3b2a4;--line:#32433a;--g:#6fbf84;--gt:#0e1a11;--y:#f0bd48;--bad:#ff8a80}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Nunito Sans",system-ui,sans-serif;font-size:16px;line-height:1.45}
+header{background:var(--g);color:var(--gt);padding:28px 16px 22px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+header .wrap{padding:0}
+h1{font-family:"Bitter",Georgia,serif;font-weight:800;font-size:clamp(1.7rem,5vw,2.6rem);margin:0 0 4px}
+header p{margin:0;max-width:52ch;opacity:.92}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0}
+.chip,.btn{font:inherit;font-weight:800;border-radius:999px;border:2px solid var(--line);background:var(--panel);color:var(--ink);padding:6px 14px;cursor:pointer}
+.chip.on{background:var(--g);border-color:var(--g);color:var(--gt)}
+.btn{border-radius:10px;border-color:var(--g);background:var(--g);color:var(--gt)}
+.btn.alt{background:var(--panel);color:var(--g)}
+.btn.bad{border-color:var(--bad);background:var(--panel);color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+.admin{background:color-mix(in srgb,var(--y) 22%,transparent);border:2px solid var(--y);border-radius:12px;padding:10px 12px;margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.admin b{margin-right:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;padding-bottom:110px}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.ph{aspect-ratio:4/3;background:color-mix(in srgb,var(--g) 14%,var(--panel));display:grid;place-items:center;font-size:3.4rem;overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.cb{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.cb h3{font-family:"Bitter",Georgia,serif;font-size:1.1rem;margin:0}
+.tag{color:var(--mute);font-size:.85rem;margin:0}
+.desc{margin:0;color:var(--mute);font-size:.92rem}
+.price{font-weight:800;font-size:1.2rem;margin-top:auto}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.empty{grid-column:1/-1;text-align:center;color:var(--mute);padding:40px 0}
+.cartbtn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:10px 20px;background:var(--y);border-color:var(--y);color:#1d2b1f;font-size:1rem}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:flex;align-items:flex-end;justify-content:center;padding-top:env(safe-area-inset-top,0px)}
+.ov[hidden]{display:none}
+.pn{background:var(--panel);border-radius:18px 18px 0 0;width:100%;max-width:520px;max-height:90%;overflow:auto;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+.pn h2{font-family:"Bitter",Georgia,serif;margin:0 0 10px}
+label{display:block;font-weight:800;font-size:.9rem;margin:10px 0 3px}
+input,select,textarea{font:inherit;width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.ci{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.ci span.n{flex:1}
+.q{width:32px;height:32px;border-radius:8px;border:2px solid var(--g);background:var(--panel);color:var(--g);font-weight:800;cursor:pointer}
+.tot{font-weight:800;font-size:1.2rem;margin:12px 0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:10px;z-index:30}
+.toast[hidden]{display:none}
+small{color:var(--mute)}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1 id="sn"></h1><p>Productos hechos por nuestros estudiantes en la huerta, la granja y los talleres. Elegí lo que quieras y envianos tu pedido.</p></div></header>
+<main class="wrap">
+<div class="admin" id="admin" hidden=""><b>Modo administrador</b><button class="btn" id="add">+ Nuevo producto</button><button class="btn alt" id="cfg">Ajustes de la escuela</button><button class="btn" id="dsc">Descontar pedido</button><small style="flex-basis:100%">Los pedidos te llegan por WhatsApp. Cuando confirmes uno, usa «Descontar pedido» para bajar el stock de todos sus productos de una vez.</small></div>
+<div class="bar" id="cats" role="group" aria-label="Categorías"></div>
+<div class="grid" id="grid"></div>
+</main>
+<button class="btn cartbtn" id="cartbtn" hidden=""></button>
+<div class="ov" id="ov" hidden=""><div class="pn" id="pn" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" hidden=""></div>
+<script>
+const DATA=/*D*/{"school":{"name":"Escuela de Agro","wa":"543498457880"},"products":[{"id":"p1","n":"Plantines de tomate","p":1500,"c":"plan","d":"Bandeja de 12 plantines listos para trasplantar.","s":40,"img":""},{"id":"p2","n":"Miel de campo 500 g","p":6000,"c":"miel","d":"Cosecha de nuestros apiarios escolares.","s":12,"img":""},{"id":"p3","n":"Leche de vaca fresca","p":8000,"c":"carn","d":"Produccion de leche de vacas de nuestra institucion trabajada en la granja por nuestros alumnos","s":19,"img":""}]}/*E*/;
+const SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;
+const CATS=[["verd","Verduras","🥬"],["frut","Frutas","🍎"],["lact","Lácteos","🧀"],["miel","Miel y dulces","🍯"],["plan","Plantines","🌱"],["carn","Carnes y huevos","🥚"],["otro","Otros","🧺"]];
+const $=id=>document.getElementById(id);
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const fmt=n=>new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",maximumFractionDigits:0}).format(n);
+const cinfo=k=>CATS.find(c=>c[0]==k)||CATS[6];
+let art=null,assets=null,admin=false,cat="all",cart={};
+try{cart=JSON.parse(localStorage.getItem("cart")||"{}")}catch(e){}
+const saveCart=()=>{try{localStorage.setItem("cart",JSON.stringify(cart))}catch(e){}};
+function toast(t){const b=$("toast");b.textContent=t;b.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>b.hidden=true,3500)}
+async function save(){const j=JSON.stringify(DATA).replace(/</g,"\\u003c");
+ const html=SRC.replace(/\/\*D\*\/[\s\S]*?\/\*E\*\//,()=>"/*D*/"+j+"/*E*/");
+ try{await art.publish(html)}catch(e){toast(e&&e.code=="conflict"?"Otra persona guardó cambios y la página se actualizó.":"No se pudo guardar. Intenta de nuevo.");return false}return true}
+function close(){$("ov").hidden=true}
+function open(){$("ov").hidden=false}
+$("ov").onclick=e=>{if(e.target===$("ov"))close()};
+
+function render(){
+ $("sn").textContent=DATA.school.name;document.title="Tienda de "+DATA.school.name;
+ $("admin").hidden=!admin;
+ const cb=$("cats");cb.textContent="";
+ [["all","Todo"],...CATS.map(c=>[c[0],c[1]])].forEach(([k,l])=>{const b=el("button","chip"+(cat==k?" on":""),l);b.onclick=()=>{cat=k;render()};cb.append(b)});
+ const g=$("grid");g.textContent="";
+ const list=DATA.products.filter(p=>cat=="all"||p.c==cat);
+ if(!list.length)g.append(el("p","empty",admin?"Todavía no hay productos aquí. Usa «+ Nuevo producto».":"Pronto vamos a publicar productos en esta categoría."));
+ list.forEach(p=>{const c=el("div","card"),ph=el("div","ph");
+  if(p.img){const i=document.createElement("img");i.src="/_blob/"+p.img;i.alt=p.n;i.loading="lazy";ph.append(i)}else ph.textContent=cinfo(p.c)[2];
+  const b=el("div","cb");b.append(el("h3","",p.n),el("p","tag",cinfo(p.c)[1]));
+  if(p.d)b.append(el("p","desc",p.d));
+  b.append(el("div","price",fmt(p.p)),el("small","",p.s>0?"Disponibles: "+p.s:"Agotado"));
+  const r=el("div","row"),a=el("button","btn",p.s>0?"Agregar al pedido":"Agotado");a.disabled=p.s<=0;a.onclick=()=>{const n=(cart[p.id]||0)+1;if(n>p.s){toast("No hay más stock de este producto.");return}cart[p.id]=n;saveCart();render()};r.append(a);
+  if(admin){const sm=el("button","btn alt","Stock −1");sm.onclick=async()=>{if(p.s>0){p.s--;await save()}};const sp=el("button","btn alt","Stock +1");sp.onclick=async()=>{p.s++;await save()};r.append(sm,sp);const e=el("button","btn alt","Editar");e.onclick=()=>form(p);const d=el("button","btn bad","Eliminar");d.onclick=async()=>{if(d.textContent!="¿Seguro?"){d.textContent="¿Seguro?";return}DATA.products=DATA.products.filter(x=>x.id!=p.id);await save()};r.append(e,d)}
+  b.append(r);c.append(ph,b);g.append(c)});
+ const n=Object.values(cart).reduce((a,b)=>a+b,0),t=items().reduce((a,x)=>a+x.p.p*x.q,0);
+ const cbn=$("cartbtn");cbn.hidden=!n;cbn.textContent=`🛒 Ver pedido (${n}) · ${fmt(t)}`}
+function items(){return Object.keys(cart).map(id=>({p:DATA.products.find(p=>p.id==id),q:cart[id]})).filter(x=>x.p&&x.q>0)}
+$("cartbtn").onclick=()=>showCart();
+function showCart(){const pn=$("pn");pn.textContent="";pn.append(el("h2","","Tu pedido"));
+ const it=items();let t=0;
+ it.forEach(({p,q})=>{t+=p.p*q;const r=el("div","ci");r.append(el("span","n",p.n+" · "+fmt(p.p)));
+  const m=el("button","q","−");m.setAttribute("aria-label","Quitar uno");m.onclick=()=>{cart[p.id]--;if(cart[p.id]<=0)delete cart[p.id];saveCart();render();showCart()};
+  const pl=el("button","q","+");pl.setAttribute("aria-label","Agregar uno");pl.onclick=()=>{if(cart[p.id]<p.s){cart[p.id]++;saveCart();render();showCart()}else toast("No hay más stock.")};
+  r.append(m,el("b","",String(q)),pl);pn.append(r)});
+ if(!it.length){pn.append(el("p","","Tu pedido está vacío."));const c=el("button","btn alt","Cerrar");c.onclick=close;pn.append(c);open();return}
+ pn.append(el("div","tot","Total: "+fmt(t)));pn.append(el("small","","El stock se actualiza cuando la escuela confirma tu pedido."));
+ pn.append(el("label","","Tu nombre"));const nm=el("input");nm.id="bn";nm.placeholder="Nombre y apellido";pn.append(nm);
+ pn.append(el("label","","¿Cómo lo recibís?"));const dl=el("select");["Retiro en la escuela","Envío a coordinar"].forEach(x=>dl.append(new Option(x,x)));pn.append(dl);
+ pn.append(el("label","","Notas (opcional)"));const nt=el("textarea");nt.rows=2;nt.placeholder="Horario, aclaraciones…";pn.append(nt);
+ const msg=()=>[`Hola, quiero hacer un pedido en ${DATA.school.name}.`,"",`*Nombre:* ${nm.value.trim()||"(sin nombre)"}`,`*Entrega:* ${dl.value}`,"","*Productos*",...it.map(({p,q})=>`• ${q} × ${p.n} — ${fmt(p.p*q)} (${fmt(p.p)} c/u)`),"",`*Total: ${fmt(t)}*`,...(nt.value.trim()?["",`*Notas:* ${nt.value.trim()}`]:[]),"","¡Gracias!"].join("\n");
+ const row=el("div","row");row.style.marginTop="12px";
+ const wa=(DATA.school.wa||"").replace(/\D/g,"");
+ if(wa){const a=el("a","btn","Abrir WhatsApp");a.style.textDecoration="none";a.target="_blank";a.rel="noopener noreferrer";const up=()=>{a.href="https://wa.me/"+wa+"?text="+encodeURIComponent(msg())};up();[nm,dl,nt].forEach(e=>{e.oninput=up;e.onchange=up});a.onclick=async()=>{up();try{await navigator.clipboard.writeText(msg())}catch(e){}toast("Pedido copiado. Si WhatsApp no se abre, pégalo en el chat.")};row.append(a);
+  if(navigator.share){const sh=el("button","btn","Compartir pedido");sh.onclick=async()=>{try{await navigator.share({text:msg()})}catch(e){}};row.append(sh)}}
+ const cp=el("button","btn alt","Copiar pedido");cp.onclick=async()=>{try{await navigator.clipboard.writeText(msg());toast("Pedido copiado")}catch(e){toast("No se pudo copiar")}};
+ const cl=el("button","btn alt","Cerrar");cl.onclick=close;row.append(cp,cl);
+ if(admin){const ds=el("button","btn","Descontar stock de este pedido");ds.onclick=async()=>{it.forEach(({p,q})=>{p.s=Math.max(0,p.s-q)});cart={};saveCart();await save()};row.append(ds)}pn.append(row);
+ pn.append(el("small","",wa?"Si WhatsApp no se abre desde aquí, toca «Copiar pedido» (o «Compartir pedido») y envíalo al número +"+wa+".":"La escuela aún no cargó un número de WhatsApp. Copia el pedido y envíalo por el medio que te indiquen."));
+ open()}
+
+function field(pn,label,node){pn.append(el("label","",label),node);return node}
+function form(p){const pn=$("pn");pn.textContent="";const nw=!p;p=p||{id:"p"+Date.now().toString(36),n:"",p:0,c:"verd",d:"",s:1,img:""};
+ pn.append(el("h2","",nw?"Nuevo producto":"Editar producto"));
+ const n=field(pn,"Nombre",el("input"));n.value=p.n;
+ const pr=field(pn,"Precio (pesos)",el("input"));pr.type="number";pr.min="0";pr.value=p.p;
+ const c=field(pn,"Categoría",el("select"));CATS.forEach(k=>{const o=el("option","",k[1]);o.value=k[0];c.append(o)});c.value=p.c;
+ const s=field(pn,"Cantidad disponible (0 = agotado)",el("input"));s.type="number";s.min="0";s.value=p.s;
+ const d=field(pn,"Descripción (opcional)",el("textarea"));d.rows=3;d.value=p.d;
+ const f=field(pn,"Foto (opcional)",el("input"));f.type="file";f.accept="image/*";
+ if(!assets)pn.append(el("small","","Subir fotos no está disponible con tu permiso actual."));
+ const row=el("div","row");row.style.marginTop="14px";
+ const ok=el("button","btn","Guardar");const no=el("button","btn alt","Cancelar");no.onclick=close;
+ ok.onclick=async()=>{const name=n.value.trim(),price=Math.round(+pr.value);
+  if(!name||!(price>=0)){toast("Completa el nombre y un precio válido.");return}
+  ok.disabled=true;ok.textContent="Guardando…";
+  try{if(f.files[0]&&assets){const r=await assets.upload(await shrink(f.files[0]));p.img=r.id}}catch(e){toast("No se pudo subir la foto.");ok.disabled=false;ok.textContent="Guardar";return}
+  Object.assign(p,{n:name,p:price,c:c.value,s:Math.max(0,Math.round(+s.value||0)),d:d.value.trim()});
+  if(nw)DATA.products.unshift(p);else DATA.products=DATA.products.map(x=>x.id==p.id?p:x);
+  if(!(await save())){ok.disabled=false;ok.textContent="Guardar"}};
+ row.append(ok,no);pn.append(row);open()}
+async function shrink(file){const bm=await createImageBitmap(file),k=Math.min(1,900/Math.max(bm.width,bm.height)),cv=document.createElement("canvas");
+ cv.width=Math.round(bm.width*k);cv.height=Math.round(bm.height*k);cv.getContext("2d").drawImage(bm,0,0,cv.width,cv.height);
+ return new Promise(r=>cv.toBlob(b=>r(b||file),"image/jpeg",.82))}
+$("dsc").onclick=()=>{const pn=$("pn");pn.textContent="";pn.append(el("h2","","Descontar pedido"));pn.append(el("small","","Indica cuántas unidades de cada producto llevó el cliente."));
+ const ins=[];DATA.products.filter(p=>p.s>0).forEach(p=>{const r=el("div","ci");r.append(el("span","n",p.n+" (hay "+p.s+")"));const i=el("input");i.type="number";i.min="0";i.max=p.s;i.value="0";i.style.width="80px";r.append(i);ins.push([p,i]);pn.append(r)});
+ const row=el("div","row");row.style.marginTop="14px";const ok=el("button","btn","Descontar del stock"),no=el("button","btn alt","Cancelar");no.onclick=close;
+ ok.onclick=async()=>{let any=0;ins.forEach(([p,i])=>{const q=Math.min(p.s,Math.max(0,Math.round(+i.value||0)));if(q){p.s-=q;any=1}});if(!any){toast("No cargaste cantidades.");return}ok.disabled=true;if(!(await save()))ok.disabled=false};
+ row.append(ok,no);pn.append(row);open()};
+$("add").onclick=()=>form();
+$("cfg").onclick=()=>{const pn=$("pn");pn.textContent="";pn.append(el("h2","","Ajustes de la escuela"));
+ const n=field(pn,"Nombre de la escuela",el("input"));n.value=DATA.school.name;
+ const w=field(pn,"WhatsApp para recibir pedidos",el("input"));w.value=DATA.school.wa;w.placeholder="5493491123456";w.inputMode="numeric";
+ pn.append(el("small","","Con código de país, sin + ni espacios. Ejemplo para Argentina: 549 + código de área + número."));
+ const row=el("div","row");row.style.marginTop="14px";const ok=el("button","btn","Guardar"),no=el("button","btn alt","Cancelar");no.onclick=close;
+ ok.onclick=async()=>{DATA.school.name=n.value.trim()||"Escuela de Agro";DATA.school.wa=w.value.replace(/\D/g,"");ok.disabled=true;if(!(await save()))ok.disabled=false};
+ row.append(ok,no);pn.append(row);open()};
+render();
+(async()=>{if(typeof claude=="undefined")return;
+ try{const u=await claude.use("user");admin=!!(u&&u.canEdit())}catch(e){}
+ try{art=await claude.use("artifact")}catch(e){}
+ try{assets=await claude.use("assets")}catch(e){}
+ admin=admin&&!!art;render()})();
+</script></body></html>
