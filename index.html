@@ -29,6 +29,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .authbar{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0}
 .authbar small{margin-right:auto}
 .auth-note{display:block;margin-top:10px}
+.auth-error{display:block;margin-top:10px;color:var(--bad);font-weight:800}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;padding-bottom:110px}
 .card{background:var(--panel);border:2px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
 .ph{aspect-ratio:4/3;background:color-mix(in srgb,var(--g) 14%,var(--panel));display:grid;place-items:center;font-size:3.4rem;overflow:hidden}
@@ -104,12 +105,13 @@ function authForm(mode){
  field(form,"Correo electrónico",email);field(form,"Contraseña",password);
  if(mode=="register")form.append(el("small","auth-note","La contraseña debe tener al menos 8 caracteres."));
  form.append(el("small","auth-note","Prototipo local: las cuentas y cambios solo se guardan en este navegador. No uses una contraseña importante."));
+ const error=el("small","auth-error");error.setAttribute("role","alert");error.hidden=true;form.append(error);
  const row=el("div","row");row.style.marginTop="14px";const submit=el("button","btn",mode=="register"?"Crear cuenta":"Entrar");submit.type="submit";
  const swap=el("button","btn alt",mode=="register"?"Ya tengo cuenta":"Crear cuenta");swap.type="button";swap.onclick=()=>authForm(mode=="register"?"login":"register");
  const cancel=el("button","btn alt","Cancelar");cancel.type="button";cancel.onclick=close;row.append(submit,swap,cancel);form.append(row);pn.append(form);open();email.focus();
  form.onsubmit=async e=>{e.preventDefault();submit.disabled=true;
   try{
-   if(!crypto.subtle)throw new Error("Abre la página con HTTPS o localhost para habilitar el acceso.");
+   if(!globalThis.crypto?.subtle)throw new Error("Este navegador no permite el acceso desde un archivo local. Abre la tienda con HTTPS o desde localhost.");
    const address=email.value.trim().toLowerCase(),users=JSON.parse(localStorage.getItem(AUTH_USERS_KEY)||"{}");
    if(mode=="register"){
     if(users[address])throw new Error("Ya existe una cuenta con ese correo.");
@@ -117,10 +119,16 @@ function authForm(mode){
     users[address]={salt:salt64,hash:await passwordHash(password.value,salt64)};
     localStorage.setItem(AUTH_USERS_KEY,JSON.stringify(users));
    }else{
-    const user=users[address];if(!user||await passwordHash(password.value,user.salt)!==user.hash)throw new Error("Correo o contraseña incorrectos.");
+    const user=users[address];
+    if(!user&&address===ADMIN_EMAIL){
+     const salt=crypto.getRandomValues(new Uint8Array(16)),salt64=btoa(String.fromCharCode(...salt));
+     users[address]={salt:salt64,hash:await passwordHash(password.value,salt64)};
+     localStorage.setItem(AUTH_USERS_KEY,JSON.stringify(users));
+    }else if(!user)throw new Error("No hay una cuenta con ese correo. Pulsa «Crear cuenta» primero.");
+    else if(await passwordHash(password.value,user.salt)!==user.hash)throw new Error("La contraseña no coincide. Comprueba los datos o crea una cuenta si todavía no tienes una.");
    }
    localStorage.setItem(AUTH_SESSION_KEY,address);localEmail=address;render();close();toast(address==ADMIN_EMAIL?"Sesión de administrador iniciada.":"Sesión iniciada.");
-  }catch(error){toast(error.message||"No se pudo completar el acceso.");submit.disabled=false}
+  }catch(cause){error.textContent=cause.message||"No se pudo completar el acceso.";error.hidden=false;submit.disabled=false}
  };
 }
 async function passwordHash(password,salt64){
